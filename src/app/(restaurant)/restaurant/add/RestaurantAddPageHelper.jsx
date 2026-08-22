@@ -3,6 +3,7 @@
 import { getToken } from '@/actions/authActions';
 import { ArrowLeft, ArrowRight, FileText, ImageIcon, Loader2, Utensils } from 'lucide-react';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -57,6 +58,7 @@ const RestaurantAddPageHelper = () => {
 
             setSuccessMessage(true);
             reset();
+            redirect('/restaurant/my')
         } catch (error) {
             console.error('Error submitting restaurant:', error);
         } finally {
