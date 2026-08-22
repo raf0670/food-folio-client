@@ -7,7 +7,7 @@ const MyRestaurantPreview = ({ restaurant }) => {
     return (
         <div
             key={restaurant.id}
-            className="bg-white rounded-2xl border border-orange-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col justify-between"
+            className="w-full min-w-0 h-full bg-white rounded-2xl border border-orange-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col justify-between"
         >
             <div>
                 {/* Restaurant Image/Logo Cover */}

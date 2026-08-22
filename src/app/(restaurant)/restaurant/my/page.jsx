@@ -15,7 +15,7 @@ const RestaurantUnderUser = async () => {
     const hasRestaurants = Array.isArray(restaurants) && restaurants.length > 0;
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
 
             {/* Header Section with Add Button */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-orange-100 pb-6">
@@ -59,7 +59,7 @@ const RestaurantUnderUser = async () => {
                     </div>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-stretch">
                     {restaurants.map((restaurant) => <MyRestaurantPreview key={restaurant.id} restaurant={restaurant}></MyRestaurantPreview>)}
                 </div>
             )}
