@@ -59,7 +59,7 @@ const RestaurantUnderUser = async () => {
                     </div>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                     {restaurants.map((restaurant) => <MyRestaurantPreview key={restaurant.id} restaurant={restaurant}></MyRestaurantPreview>)}
                 </div>
             )}

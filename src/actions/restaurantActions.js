@@ -34,3 +34,41 @@ export const getMyRestaurants = async () => {
         return null;
     }
 };
+
+export const createRestaurant = async (data) => {
+    try {
+        const token = await getToken();
+
+        if (!token) {
+            throw new Error('You must be logged in to create a restaurant.');
+        }
+
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/restaurant/create`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    name: data.name,
+                    description: data.description,
+                    logo_url: data.logo_url,
+                }),
+            }
+        );
+
+        const result = await res.json();
+
+        if (!res.ok) {
+            throw new Error(result.message || 'Failed to create restaurant.');
+        }
+
+        // console.log(result.restaurant);
+
+        return { success: true, restaurant: result.restaurant };
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+};

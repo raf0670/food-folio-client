@@ -5,55 +5,54 @@ import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import Image from 'next/image';
 import { User, Mail, Lock, Image as ImageIcon, MapPin, Globe, ArrowRight, Loader2 } from 'lucide-react';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { signupUser } from '@/actions/authActions';
 
 const SignUpPage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const router = useRouter();
 
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onSubmit = async (userData) => {
         setIsSubmitting(true);
         setErrorMessage('');
-        let shouldRedirectTo = false;
 
-        navigator.geolocation.getCurrentPosition(async (position) => {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
+        if (!navigator.geolocation) {
+            setErrorMessage('Geolocation is not supported by your browser');
+            setIsSubmitting(false);
+            return;
+        }
 
-            try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/signup`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+
+                try {
+                    const result = await signupUser({
                         ...userData,
                         latitude,
                         longitude
-                    })
-                });
+                    });
 
-                if (!res.ok) {
-                    const errorData = await res.json();
-                    throw new Error(errorData.message || "Signup failed");
+                    if (!result.success) {
+                        throw new Error(result.message);
+                    }
+
+                    router.push('/login');
+                } catch (error) {
+                    setErrorMessage(error.message);
+                } finally {
+                    setIsSubmitting(false);
                 }
-
-                // const data = await res.json();
-                // console.log(data);
-                shouldRedirectTo = true;
-            } catch (error) {
-                // console.log(error.message);
-                setErrorMessage(error.message);
-            } finally {
+            },
+            (error) => {
+                setErrorMessage('Unable to retrieve your location. Please allow location permissions.');
                 setIsSubmitting(false);
-                
-                if (shouldRedirectTo) {
-                    redirect('/login');
-                }
             }
-        });
+        );
     };
 
     return (

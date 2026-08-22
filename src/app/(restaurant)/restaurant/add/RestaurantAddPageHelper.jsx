@@ -1,13 +1,14 @@
 'use client';
 
-import { getToken } from '@/actions/authActions';
+import { createRestaurant } from '@/actions/restaurantActions';
 import { ArrowLeft, ArrowRight, FileText, ImageIcon, Loader2, Utensils } from 'lucide-react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 const RestaurantAddPageHelper = () => {
+    const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
 
@@ -24,43 +25,17 @@ const RestaurantAddPageHelper = () => {
         setSuccessMessage(false);
 
         try {
-            const token = await getToken();
+            const res = await createRestaurant(data);
 
-            if (!token) {
-                throw new Error('You must be logged in to create a restaurant.');
+            if (!res.success) {
+                throw new Error(res.message);
             }
-
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/restaurant/create`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        name: data.name,
-                        description: data.description,
-                        logo_url: data.logo_url,
-                    }),
-                }
-            );
-
-            const result = await res.json();
-
-            if (!res.ok) {
-                throw new Error(
-                    result.message || 'Failed to create restaurant.'
-                );
-            }
-
-            // console.log(result.restaurant);
 
             setSuccessMessage(true);
             reset();
-            redirect('/restaurant/my')
+            router.push('/restaurant/my');
         } catch (error) {
-            console.error('Error submitting restaurant:', error);
+            console.error(error);
         } finally {
             setIsSubmitting(false);
         }
