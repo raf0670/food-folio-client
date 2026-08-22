@@ -7,7 +7,7 @@ import { Menu, X, Rss, User, Search, LayoutDashboard, LogIn, LogOut } from 'luci
 import { usePathname } from 'next/navigation';
 import { logOut } from '@/actions/authActions';
 
-export default function NavbarHelper({ user, cookieStore }) {
+export default function NavbarHelper({ user }) {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
     const isLoggedIn = Boolean(user);
@@ -82,7 +82,7 @@ export default function NavbarHelper({ user, cookieStore }) {
                             <LayoutDashboard className="w-4 h-4 text-orange-500" />
                             My Restaurants
                         </Link>
-                        <Link href="/profile" className={getNavLinkClass('/profile')}>
+                        <Link href={`/profile/${user?.id}`} className={getNavLinkClass('/profile')}>
                             <User className="w-4 h-4 text-orange-500" />
                             Profile
                         </Link>
@@ -170,7 +170,7 @@ export default function NavbarHelper({ user, cookieStore }) {
                         My Restaurants
                     </Link>
                     <Link
-                        href="/profile"
+                        href={`/profile/${user?.id}`}
                         onClick={() => setIsOpen(false)}
                         className={getMobileLinkClass('/profile')}
                     >
