@@ -8,11 +8,11 @@ const UserProfile = async ({ params }) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile/getUser/${userId}`);
     const data = await res.json();
     // console.log(data);
-    const displayedUserProfile = data.user;
+    const displayedUserProfile = data?.user;
 
     return (
         <div>
-            {displayedUserProfile.id}
+            {displayedUserProfile?.id}
         </div>
     );
 };
