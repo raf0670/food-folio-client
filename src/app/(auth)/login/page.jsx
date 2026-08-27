@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Mail, Lock, ArrowRight, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { loginUser } from '@/actions/authActions';
 
 const LoginPage = () => {
     const router = useRouter();
@@ -20,25 +21,11 @@ const LoginPage = () => {
         setErrorMessage('');
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            });
+            const res = await loginUser(data);
 
-            if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.message || "Login failed");
+            if (!res.success) {
+                throw new Error(res.message);
             }
-
-            const responseData = await res.json();
-            // console.log(responseData.token);
-
-            Cookies.set('token', responseData.token, {
-                expires: 7
-            });
 
             router.replace('/');
             router.refresh();

@@ -4,11 +4,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Menu, X, Rss, User, Search, LayoutDashboard, LogIn, LogOut } from 'lucide-react';
-import { redirect } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { logOut } from '@/actions/authActions';
 
-export default function NavbarHelper({ user, cookieStore }) {
+export default function NavbarHelper({ user }) {
     const [isOpen, setIsOpen] = useState(false);
+    const pathname = usePathname();
     const isLoggedIn = Boolean(user);
     const displayName = user?.name || user?.email || 'Foodie';
     const initials = displayName
@@ -25,7 +26,22 @@ export default function NavbarHelper({ user, cookieStore }) {
 
     const handleLogout = async () => {
         await logOut();
-        redirect('/');
+    };
+
+    const getNavLinkClass = (path) => {
+        const isActive = pathname === path;
+        return `flex items-center gap-1.5 px-3 py-2 rounded-full font-medium transition-colors text-sm ${isActive
+                ? 'bg-orange-100/60 text-amber-900 border border-orange-200/40 shadow-2xs'
+                : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50/60'
+            }`;
+    };
+
+    const getMobileLinkClass = (path) => {
+        const isActive = pathname === path;
+        return `flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-colors ${isActive
+                ? 'bg-orange-50 text-amber-900 border border-orange-100/80'
+                : 'text-gray-600 hover:bg-orange-50/50 hover:text-orange-600'
+            }`;
     };
 
     return (
@@ -38,7 +54,7 @@ export default function NavbarHelper({ user, cookieStore }) {
                         <Link href="/" className="flex items-center gap-3 group">
                             <div className="relative w-12 h-12 overflow-hidden rounded-full border border-orange-200 shadow-sm">
                                 <Image
-                                    src="/foodFolioLogoCircular.png" // Place your logo in the public folder
+                                    src="/foodFolioLogoCircular.png"
                                     alt="Food Folio Logo"
                                     fill
                                     sizes='1000'
@@ -54,31 +70,19 @@ export default function NavbarHelper({ user, cookieStore }) {
 
                     {/* 2. Nav Items in the Middle (Desktop) */}
                     <div className="hidden md:flex items-center space-x-1 lg:space-x-2 bg-orange-50/50 px-4 py-1.5 rounded-full border border-orange-100/60">
-                        <Link
-                            href="/feed"
-                            className="flex items-center gap-1.5 px-3 py-2 rounded-full text-gray-700 hover:text-orange-600 hover:bg-orange-100/50 font-medium transition-colors text-sm"
-                        >
+                        <Link href="/feed" className={getNavLinkClass('/feed')}>
                             <Rss className="w-4 h-4 text-orange-500" />
                             Feed
                         </Link>
-                        <Link
-                            href="/search"
-                            className="flex items-center gap-1.5 px-3 py-2 rounded-full text-gray-700 hover:text-orange-600 hover:bg-orange-100/50 font-medium transition-colors text-sm"
-                        >
+                        <Link href="/search" className={getNavLinkClass('/search')}>
                             <Search className="w-4 h-4 text-orange-500" />
                             Search
                         </Link>
-                        <Link
-                            href="/restaurant/my"
-                            className="flex items-center gap-1.5 px-3 py-2 rounded-full text-gray-700 hover:text-orange-600 hover:bg-orange-100/50 font-medium transition-colors text-sm"
-                        >
+                        <Link href="/restaurant/my" className={getNavLinkClass('/restaurant/my')}>
                             <LayoutDashboard className="w-4 h-4 text-orange-500" />
                             My Restaurants
                         </Link>
-                        <Link
-                            href="/profile"
-                            className="flex items-center gap-1.5 px-3 py-2 rounded-full text-gray-700 hover:text-orange-600 hover:bg-orange-100/50 font-medium transition-colors text-sm"
-                        >
+                        <Link href={`/profile/${user?.id}`} className={getNavLinkClass('/profile')}>
                             <User className="w-4 h-4 text-orange-500" />
                             Profile
                         </Link>
@@ -144,7 +148,7 @@ export default function NavbarHelper({ user, cookieStore }) {
                     <Link
                         href="/feed"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 hover:bg-orange-50 hover:text-orange-600 font-medium transition-colors"
+                        className={getMobileLinkClass('/feed')}
                     >
                         <Rss className="w-5 h-5 text-orange-500" />
                         Feed
@@ -152,7 +156,7 @@ export default function NavbarHelper({ user, cookieStore }) {
                     <Link
                         href="/search"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 hover:bg-orange-50 hover:text-orange-600 font-medium transition-colors"
+                        className={getMobileLinkClass('/search')}
                     >
                         <Search className="w-5 h-5 text-orange-500" />
                         Search
@@ -160,15 +164,15 @@ export default function NavbarHelper({ user, cookieStore }) {
                     <Link
                         href="/restaurant/my"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 hover:bg-orange-50 hover:text-orange-600 font-medium transition-colors"
+                        className={getMobileLinkClass('/restaurant/my')}
                     >
                         <LayoutDashboard className="w-5 h-5 text-orange-500" />
                         My Restaurants
                     </Link>
                     <Link
-                        href="/profile"
+                        href={`/profile/${user?.id}`}
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 hover:bg-orange-50 hover:text-orange-600 font-medium transition-colors"
+                        className={getMobileLinkClass('/profile')}
                     >
                         <User className="w-5 h-5 text-orange-500" />
                         Profile
@@ -177,26 +181,29 @@ export default function NavbarHelper({ user, cookieStore }) {
                     {isLoggedIn ? (
                         <div className="pt-4 mt-2 border-t border-orange-100 flex items-center justify-between px-2">
                             <span className="text-sm text-gray-700 font-medium">Hello, {displayName}</span>
-                            <Link
-                                href="/profile"
-                                onClick={() => setIsOpen(false)}
-                                className="w-10 h-10 rounded-full bg-orange-200 flex items-center justify-center text-orange-700 font-bold border-2 border-orange-400"
-                            >
-                                {initials}
-                            </Link>
-                            <button
-                                onClick={() => {
-                                    setIsOpen(false);
-                                    handleLogout();
-                                }}
-                                className="flex items-center gap-1.5 text-xs text-red-600 hover:text-red-700 font-medium px-3 py-2 rounded-lg bg-red-50 hover:bg-red-100 transition-colors"
-                            >
-                                <LogOut className="w-4 h-4" />
-                                Log Out
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <Link
+                                    href="/profile"
+                                    onClick={() => setIsOpen(false)}
+                                    className="w-10 h-10 rounded-full bg-orange-200 flex items-center justify-center text-orange-700 font-bold border-2 border-orange-400"
+                                >
+                                    {initials}
+                                </Link>
+                                <button
+                                    onClick={() => {
+                                        setIsOpen(false);
+                                        handleLogout();
+                                    }}
+                                    className="flex items-center gap-1.5 text-xs text-red-600 hover:text-red-700 font-medium px-3 py-2 rounded-lg bg-red-50 hover:bg-red-100 transition-colors"
+                                >
+                                    <LogOut className="w-4 h-4" />
+                                    Log Out
+                                </button>
+                            </div>
                         </div>
                     ) : (
                         <div className="pt-4 mt-2 border-t border-orange-100 flex items-center justify-between px-2">
+                            <span className="text-sm text-gray-500 font-medium">Session Area</span>
                             <Link
                                 href="/signup"
                                 onClick={() => setIsOpen(false)}
