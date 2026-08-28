@@ -3,35 +3,46 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, MapPin } from 'lucide-react';
 import { getFeed } from '@/actions/feedActions';
+import { getCurrentUser } from '@/actions/userActions';
 import MyRestaurantPreview from '@/components/restaurants/MyRestaurantPreview';
 
 export default function FeedPage() {
     const [reviews, setReviews] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchFeedData = async (lat, lng, city) => {
-            const data = await getFeed(lat, lng, city, 'Bangladesh');
-            setReviews(data);
-            setIsLoading(false);
+useEffect(() => {
+        const loadLocation = async () => {
+            // 1. Get the logged-in user's data
+            const user = await getCurrentUser();
+            const ucity = user?.city || 'Dhaka'; // Uses user's city if available, otherwise Dhaka
+            const ucountry = user?.country || 'Bangladesh';
+
+            const fetchFeedData = async (lat, lng, city, country) => {
+                const data = await getFeed(lat, lng, city, country);
+                setReviews(data);
+                setIsLoading(false);
+            };
+
+            // 2. Try to get browser location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        fetchFeedData(lat, lng, null, null); // Has exact location, no city needed
+                    },
+                    (error) => {
+                        console.log("Location access denied, falling back to user's city:", ucity);
+                        fetchFeedData(null, null, ucity, ucountry); // Uses dynamic city
+                    }
+                );
+            } else {
+                fetchFeedData(null, null, ucity, ucountry);
+            }
         };
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    fetchFeedData(lat, lng, null);
-                },
-                (error) => {
-                    console.log("Location access denied, falling back to city.");
-                    fetchFeedData(null, null, 'Dhaka');
-                }
-            );
-        } else {
-            fetchFeedData(null, null, 'Dhaka');
-        }
-    }, []); // [] it means the code will run only once after loading of page
+        loadLocation();
+    }, []); // [] - it means the code will run only once after loading of page
 
     // loading animation
     if (isLoading) {
