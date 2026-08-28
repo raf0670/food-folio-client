@@ -9,40 +9,51 @@ import MyRestaurantPreview from '@/components/restaurants/MyRestaurantPreview';
 export default function FeedPage() {
     const [reviews, setReviews] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [radius, setRadius] = useState(10);           // default 10 km
+
+    const [location, setLocation] = useState({ lat: null, lng: null, city: null, country: null, isReady: false });
 
 useEffect(() => {
         const loadLocation = async () => {
-            // 1. Get the logged-in user's data
+
             const user = await getCurrentUser();
             const ucity = user?.city || 'Dhaka'; // Uses user's city if available, otherwise Dhaka
             const ucountry = user?.country || 'Bangladesh';
 
-            const fetchFeedData = async (lat, lng, city, country) => {
-                const data = await getFeed(lat, lng, city, country);
-                setReviews(data);
-                setIsLoading(false);
-            };
-
-            // 2. Try to get browser location
+             // 2. Try to get browser location
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-                        fetchFeedData(lat, lng, null, null); // Has exact location, no city needed
+                        setLocation({ lat: position.coords.latitude, lng: position.coords.longitude, city: null, country: null, isReady: true })
                     },
                     (error) => {
                         console.log("Location access denied, falling back to user's city:", ucity);
-                        fetchFeedData(null, null, ucity, ucountry); // Uses dynamic city
+                        setLocation({ lat: null, lng: null, city: ucity, country: ucountry, isReady: true }); 
+                        // Uses dynamic city
                     }
                 );
             } else {
-                fetchFeedData(null, null, ucity, ucountry);
+                setLocation({ lat: null, lng: null, city: ucity, country: ucountry, isReady: true });
             }
         };
 
         loadLocation();
-    }, []); // [] - it means the code will run only once after loading of page
+    }, []);              // [] - it means the code will run only once after loading of page
+
+    useEffect(() => {
+        if (location.isReady) {
+            const fetchFeedData = async () => {
+                setIsLoading(true);
+                
+                const data = await getFeed(location.lat, location.lng, location.city, location.country, radius);
+                
+                setReviews(data);
+                setIsLoading(false);
+            };
+            
+            fetchFeedData();
+        }
+    }, [location, radius]);  //this is dependency array
 
     // loading animation
     if (isLoading) {
@@ -63,6 +74,21 @@ useEffect(() => {
                     Food Spots Around You
                 </h1>
             </div>
+
+            <div className="mb-8 bg-white p-5 rounded-2xl border border-orange-100 shadow-sm">
+            <div className="flex justify-between items-center mb-2">
+                <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">Search Radius</label>
+                <span className="text-sm font-semibold text-orange-600 bg-orange-50 px-3 py-1 rounded-full">{radius} km</span>
+            </div>
+                <input 
+                type="range" 
+                min="1" max="50" 
+                value={radius}
+                onChange={(e) => setRadius(e.target.value)}
+                className="w-full cursor-pointer accent-orange-500"
+                />
+            </div>
+
 
             {/* showing reviews in a loop using map */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

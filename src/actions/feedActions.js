@@ -1,6 +1,6 @@
 'use server';
 
-export const getFeed = async (lat, lng, city, country) => {
+export const getFeed = async (lat, lng, city, country, radius) => {
     try {
 
         let url = `${process.env.NEXT_PUBLIC_API_URL}/api/feed?`;
@@ -16,6 +16,11 @@ export const getFeed = async (lat, lng, city, country) => {
             {
             url += `&country=${country}`;
             }
+        }
+
+        if (radius) 
+        {
+            url += `&radius=${radius}`;
         }
 
         // backend request
