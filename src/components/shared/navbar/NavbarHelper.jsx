@@ -29,7 +29,11 @@ export default function NavbarHelper({ user }) {
     };
 
     const getNavLinkClass = (path) => {
-        const isActive = pathname === path;
+        // If the path is profile, check if the current pathname starts with '/profile'
+        const isActive = path === '/profile'
+            ? pathname.startsWith('/profile')
+            : pathname === path;
+
         return `flex items-center gap-1.5 px-3 py-2 rounded-full font-medium transition-colors text-sm ${isActive
             ? 'bg-orange-100/60 text-amber-900 border border-orange-200/40 shadow-2xs'
             : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50/60'
@@ -37,7 +41,10 @@ export default function NavbarHelper({ user }) {
     };
 
     const getMobileLinkClass = (path) => {
-        const isActive = pathname === path;
+        const isActive = path === '/profile'
+            ? pathname.startsWith('/profile')
+            : pathname === path;
+
         return `flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-colors ${isActive
             ? 'bg-orange-50 text-amber-900 border border-orange-100/80'
             : 'text-gray-600 hover:bg-orange-50/50 hover:text-orange-600'
