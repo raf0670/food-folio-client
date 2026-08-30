@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
     BadgeCheck,
-    BookOpen,
     Calendar,
     Edit3,
     Mail,
@@ -88,7 +87,6 @@ const UserProfile = async ({ params }) => {
     return (
         <main className="min-h-[calc(100vh-80px)] bg-[#FDFBF7]">
             <section className="relative overflow-hidden border-b border-orange-100/80 bg-[radial-gradient(circle_at_top_left,#fff7ed_0,#fdfbf7_34%,#f8fafc_100%)] px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
-                <div className="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-red-500 via-orange-400 to-emerald-500" />
 
                 <div className="mx-auto max-w-6xl">
                     <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
@@ -139,6 +137,10 @@ const UserProfile = async ({ params }) => {
                                         {joinedSummary}
                                     </span>
                                 </div>
+
+                                <p className="max-w-xl text-sm leading-6 text-gray-600">
+                                    {bio || 'This foodie has not added a bio yet.'}
+                                </p>
                             </div>
                         </div>
 
@@ -152,28 +154,6 @@ const UserProfile = async ({ params }) => {
                             </Link>
                         )}
                     </div>
-                </div>
-            </section>
-
-            <section className="px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-                <div className="mx-auto max-w-3xl">
-                    <article className="rounded-2xl border border-orange-100 bg-white p-6 shadow-sm sm:p-8">
-                        <div className="mb-5 flex items-center gap-3">
-                            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-50 text-orange-600">
-                                <BookOpen className="h-5 w-5" />
-                            </div>
-                            <div>
-                                <p className="text-xs font-semibold uppercase text-orange-600">
-                                    Bio
-                                </p>
-                                <h2 className="text-xl font-bold text-gray-950">About {displayName}</h2>
-                            </div>
-                        </div>
-
-                        <p className="text-base leading-8 text-gray-700">
-                            {bio || 'This foodie has not added a bio yet.'}
-                        </p>
-                    </article>
                 </div>
             </section>
         </main>
