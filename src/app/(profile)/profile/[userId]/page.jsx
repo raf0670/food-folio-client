@@ -7,13 +7,9 @@ import {
     BookOpen,
     Calendar,
     Edit3,
-    Fingerprint,
-    Globe2,
-    LocateFixed,
     Mail,
     MapPin,
     ShieldAlert,
-    ShieldCheck,
     User
 } from 'lucide-react';
 
@@ -52,12 +48,6 @@ const getDisplayValue = (value, fallback = 'Not shared yet') => {
     return value.trim() || fallback;
 };
 
-const getRoleLabel = (role) => {
-    const normalizedRole = getDisplayValue(role, 'user').toString().trim().toLowerCase().replace(/_/g, ' ');
-
-    return normalizedRole.charAt(0).toUpperCase() + normalizedRole.slice(1);
-};
-
 const UserProfile = async ({ params }) => {
     const { userId } = await params;
     const currentUser = await getCurrentUser();
@@ -87,7 +77,6 @@ const UserProfile = async ({ params }) => {
     const email = getDisplayValue(displayedUserProfile.email, '');
     const displayName = name || email || 'Foodie';
     const initials = getInitials(displayName);
-    const roleLabel = getRoleLabel(displayedUserProfile.role);
     const bio = getDisplayValue(displayedUserProfile.bio, '');
     const city = getDisplayValue(displayedUserProfile.current_city, '');
     const country = getDisplayValue(displayedUserProfile.current_country, '');
@@ -95,8 +84,6 @@ const UserProfile = async ({ params }) => {
     const locationString = locationParts.join(', ');
     const joinedDate = formatJoinedDate(displayedUserProfile.created_at);
     const joinedSummary = joinedDate === 'Not shared yet' ? 'Joined date not shared' : `Joined ${joinedDate}`;
-    const hasPreciseLocation = Boolean(displayedUserProfile.location);
-    const profileId = getDisplayValue(displayedUserProfile.id, 'Unavailable');
 
     return (
         <main className="min-h-[calc(100vh-80px)] bg-[#FDFBF7]">
@@ -134,10 +121,6 @@ const UserProfile = async ({ params }) => {
                                     <h1 className="text-3xl font-black tracking-tight text-gray-950 sm:text-4xl lg:text-5xl">
                                         {displayName}
                                     </h1>
-                                    <div className="inline-flex items-center gap-2 rounded-full bg-gray-950 px-3 py-1 text-xs font-semibold text-white shadow-sm">
-                                        <ShieldCheck className="h-3.5 w-3.5 text-emerald-300" />
-                                        {roleLabel}
-                                    </div>
                                 </div>
 
                                 <div className="flex flex-wrap justify-center gap-2 text-sm text-gray-600 sm:justify-start">
@@ -173,164 +156,24 @@ const UserProfile = async ({ params }) => {
             </section>
 
             <section className="px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-                <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[minmax(280px,0.9fr)_minmax(0,1.1fr)]">
-                    <aside className="space-y-6">
-                        <div className="rounded-2xl border border-orange-100 bg-white p-6 shadow-sm">
-                            <div className="mb-5 flex items-center justify-between gap-3">
-                                <div>
-                                    <p className="text-xs font-semibold uppercase text-orange-600">
-                                        User record
-                                    </p>
-                                    <h2 className="mt-1 text-xl font-bold text-gray-950">Account Details</h2>
-                                </div>
-                                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-50 text-orange-600">
-                                    <User className="h-5 w-5" />
-                                </div>
+                <div className="mx-auto max-w-3xl">
+                    <article className="rounded-2xl border border-orange-100 bg-white p-6 shadow-sm sm:p-8">
+                        <div className="mb-5 flex items-center gap-3">
+                            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-50 text-orange-600">
+                                <BookOpen className="h-5 w-5" />
                             </div>
-
-                            <div className="space-y-3">
-                                <div className="flex gap-3 rounded-xl border border-gray-100 bg-gray-50/70 p-4">
-                                    <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-orange-500 shadow-sm">
-                                        <User className="h-4 w-4" />
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="text-xs font-semibold uppercase text-gray-400">Name</p>
-                                        <p className="mt-1 truncate text-sm font-semibold text-gray-900">
-                                            {name || 'Not shared yet'}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="flex gap-3 rounded-xl border border-gray-100 bg-gray-50/70 p-4">
-                                    <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-sky-600 shadow-sm">
-                                        <Mail className="h-4 w-4" />
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="text-xs font-semibold uppercase text-gray-400">Email</p>
-                                        <p className="mt-1 truncate text-sm font-semibold text-gray-900">
-                                            {email || 'Not shared yet'}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="flex gap-3 rounded-xl border border-gray-100 bg-gray-50/70 p-4">
-                                    <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-emerald-600 shadow-sm">
-                                        <ShieldCheck className="h-4 w-4" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs font-semibold uppercase text-gray-400">Role</p>
-                                        <p className="mt-1 text-sm font-semibold text-gray-900">{roleLabel}</p>
-                                    </div>
-                                </div>
+                            <div>
+                                <p className="text-xs font-semibold uppercase text-orange-600">
+                                    Bio
+                                </p>
+                                <h2 className="text-xl font-bold text-gray-950">About {displayName}</h2>
                             </div>
                         </div>
 
-                        <div className="rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm">
-                            <div className="mb-5 flex items-center justify-between gap-3">
-                                <div>
-                                    <p className="text-xs font-semibold uppercase text-emerald-600">
-                                        Location
-                                    </p>
-                                    <h2 className="mt-1 text-xl font-bold text-gray-950">Current Place</h2>
-                                </div>
-                                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-                                    <MapPin className="h-5 w-5" />
-                                </div>
-                            </div>
-
-                            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-                                <div className="rounded-xl border border-gray-100 bg-gray-50/70 p-4">
-                                    <div className="flex items-center gap-2 text-xs font-semibold uppercase text-gray-400">
-                                        <MapPin className="h-3.5 w-3.5 text-orange-500" />
-                                        City
-                                    </div>
-                                    <p className="mt-2 text-sm font-semibold text-gray-900">
-                                        {city || 'Not shared yet'}
-                                    </p>
-                                </div>
-
-                                <div className="rounded-xl border border-gray-100 bg-gray-50/70 p-4">
-                                    <div className="flex items-center gap-2 text-xs font-semibold uppercase text-gray-400">
-                                        <Globe2 className="h-3.5 w-3.5 text-emerald-600" />
-                                        Country
-                                    </div>
-                                    <p className="mt-2 text-sm font-semibold text-gray-900">
-                                        {country || 'Not shared yet'}
-                                    </p>
-                                </div>
-
-                                <div className="rounded-xl border border-gray-100 bg-gray-50/70 p-4 sm:col-span-2 lg:col-span-1">
-                                    <div className="flex items-center gap-2 text-xs font-semibold uppercase text-gray-400">
-                                        <LocateFixed className="h-3.5 w-3.5 text-sky-600" />
-                                        Precise location
-                                    </div>
-                                    <p className="mt-2 text-sm font-semibold text-gray-900">
-                                        {hasPreciseLocation ? 'Saved privately' : 'Not saved yet'}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </aside>
-
-                    <div className="space-y-6">
-                        <article className="rounded-2xl border border-orange-100 bg-white p-6 shadow-sm sm:p-8">
-                            <div className="mb-5 flex items-center gap-3">
-                                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-50 text-orange-600">
-                                    <BookOpen className="h-5 w-5" />
-                                </div>
-                                <div>
-                                    <p className="text-xs font-semibold uppercase text-orange-600">
-                                        Bio
-                                    </p>
-                                    <h2 className="text-xl font-bold text-gray-950">About {displayName}</h2>
-                                </div>
-                            </div>
-
-                            <p className="text-base leading-8 text-gray-700">
-                                {bio || 'This foodie has not added a bio yet.'}
-                            </p>
-                        </article>
-
-                        <div className="grid gap-4 sm:grid-cols-2">
-                            <div className="rounded-2xl border border-red-100 bg-red-50/70 p-5">
-                                <div className="flex items-center gap-2 text-xs font-semibold uppercase text-red-600">
-                                    <Fingerprint className="h-3.5 w-3.5" />
-                                    User ID
-                                </div>
-                                <p className="mt-3 break-all font-mono text-xs font-semibold leading-5 text-gray-900">
-                                    {profileId}
-                                </p>
-                            </div>
-
-                            <div className="rounded-2xl border border-orange-100 bg-orange-50/70 p-5">
-                                <div className="flex items-center gap-2 text-xs font-semibold uppercase text-orange-600">
-                                    <Calendar className="h-3.5 w-3.5" />
-                                    Created at
-                                </div>
-                                <p className="mt-3 text-sm font-bold text-gray-950">{joinedDate}</p>
-                            </div>
-
-                            <div className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-5">
-                                <div className="flex items-center gap-2 text-xs font-semibold uppercase text-emerald-600">
-                                    <BadgeCheck className="h-3.5 w-3.5" />
-                                    Profile scope
-                                </div>
-                                <p className="mt-3 text-sm font-bold text-gray-950">
-                                    {isOwnProfile ? 'Your Profile' : 'Public Profile'}
-                                </p>
-                            </div>
-
-                            <div className="rounded-2xl border border-sky-100 bg-sky-50/70 p-5">
-                                <div className="flex items-center gap-2 text-xs font-semibold uppercase text-sky-600">
-                                    <LocateFixed className="h-3.5 w-3.5" />
-                                    Map data
-                                </div>
-                                <p className="mt-3 text-sm font-bold text-gray-950">
-                                    {hasPreciseLocation ? 'Available' : 'Empty'}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                        <p className="text-base leading-8 text-gray-700">
+                            {bio || 'This foodie has not added a bio yet.'}
+                        </p>
+                    </article>
                 </div>
             </section>
         </main>
