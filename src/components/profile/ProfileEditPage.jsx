@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { User, FileText, MapPin, Globe, Loader2, ArrowLeft, Save } from 'lucide-react';
 import Link from 'next/link';
+import { getToken } from '@/api/authActions';
 
 export default function ProfileEditPage({ user }) {
     const router = useRouter();
@@ -25,15 +26,33 @@ export default function ProfileEditPage({ user }) {
 
     const onSubmit = async (data) => {
         setIsSubmitting(true);
-        console.log('--- Submitting Updated Profile Data ---');
-        console.log(data);
 
-        // Simulate network delay before redirecting back to user profile
-        setTimeout(() => {
-            setIsSubmitting(false);
+        try {
+            const token = await getToken();
+
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile/edit`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(data),
+            });
+
+            const result = await res.json();
+
+            if (!res.ok) {
+                throw new Error(result.message || 'Failed to update profile.');
+            }
+
             router.push(`/profile/${user.id}`);
             router.refresh();
-        }, 600);
+
+        } catch (error) {
+            console.error('Profile update error:', error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
