@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Menu, X, Rss, User, Search, LayoutDashboard, LogIn, LogOut } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { logOut } from '@/actions/authActions';
+import { logOut } from '@/api/authActions';
 
 export default function NavbarHelper({ user }) {
     const [isOpen, setIsOpen] = useState(false);

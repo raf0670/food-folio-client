@@ -1,5 +1,5 @@
 import React from 'react';
-import { getCurrentUser } from '@/actions/userActions';
+import { getCurrentUser } from '@/api/userActions';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -146,7 +146,7 @@ const UserProfile = async ({ params }) => {
 
                         {isOwnProfile && (
                             <Link
-                                href={`/profile/${userId}/edit`}
+                                href={`/profile/edit`}
                                 className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-gray-950 px-5 text-sm font-semibold text-white shadow-lg shadow-gray-900/15 transition hover:-translate-y-0.5 hover:bg-gray-800"
                             >
                                 <Edit3 className="h-4 w-4" />
