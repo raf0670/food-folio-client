@@ -1,5 +1,5 @@
 import { getCurrentUser } from '@/api/userActions';
-import BasicInfoEditPage from '@/components/settings/ProfileEditPage';
+import BasicInfoEditPage from '@/components/settings/BasicInfoEditPage';
 import { redirect } from 'next/navigation';
 
 export default async function Page() {

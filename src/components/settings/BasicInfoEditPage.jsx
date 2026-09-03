@@ -5,18 +5,13 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { User, FileText, MapPin, Globe, Loader2, ArrowLeft, Save } from 'lucide-react';
 import Link from 'next/link';
-import { getToken } from '@/api/authActions';
 import { updateProfileBasicInfo } from '@/api/settingsActions';
 
 export default function BasicInfoEditPage({ user }) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors }
-    } = useForm({
+    const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
             name: user?.name || '',
             bio: user?.bio || '',
