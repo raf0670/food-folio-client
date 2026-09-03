@@ -3,23 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { User, Lock } from 'lucide-react';
-
-const navItems = [
-    {
-        name: 'Basic Information',
-        href: '/profile/settings/basic-info',
-        icon: User,
-    },
-    {
-        name: 'Password',
-        href: '/profile/settings/password',
-        icon: Lock,
-    },
-];
+import { getSidebarNavLinks } from '@/lib/sidebar/sidebar';
 
 const SettingsSideBar = () => {
     const pathname = usePathname();
+    const navItems = getSidebarNavLinks();
 
     return (
         <aside className="w-full lg:w-72 shrink-0">

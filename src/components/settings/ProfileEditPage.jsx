@@ -7,7 +7,7 @@ import { User, FileText, MapPin, Globe, Loader2, ArrowLeft, Save } from 'lucide-
 import Link from 'next/link';
 import { getToken } from '@/api/authActions';
 
-export default function ProfileEditPage({ user }) {
+export default function BasicInfoEditPage({ user }) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
 

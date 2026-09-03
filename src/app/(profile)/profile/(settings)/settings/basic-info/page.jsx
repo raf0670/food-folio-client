@@ -1,5 +1,5 @@
 import { getCurrentUser } from '@/api/userActions';
-import ProfileEditPage from '@/components/settings/ProfileEditPage';
+import BasicInfoEditPage from '@/components/settings/ProfileEditPage';
 import { redirect } from 'next/navigation';
 
 export default async function Page() {
@@ -8,5 +8,5 @@ export default async function Page() {
         redirect('/login');
     }
 
-    return <ProfileEditPage user={user} />;
+    return <BasicInfoEditPage user={user} />;
 }
