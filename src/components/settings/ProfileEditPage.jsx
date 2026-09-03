@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { User, FileText, MapPin, Globe, Loader2, ArrowLeft, Save } from 'lucide-react';
 import Link from 'next/link';
 import { getToken } from '@/api/authActions';
+import { updateProfileBasicInfo } from '@/api/settingsActions';
 
 export default function BasicInfoEditPage({ user }) {
     const router = useRouter();
@@ -28,21 +29,10 @@ export default function BasicInfoEditPage({ user }) {
         setIsSubmitting(true);
 
         try {
-            const token = await getToken();
+            const res = await updateProfileBasicInfo(data);
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile/edit`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(data),
-            });
-
-            const result = await res.json();
-
-            if (!res.ok) {
-                throw new Error(result.message || 'Failed to update profile.');
+            if (!res.success) {
+                throw new Error(res.message);
             }
 
             router.push(`/profile/${user.id}`);
