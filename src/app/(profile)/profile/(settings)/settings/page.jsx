@@ -1,12 +1,8 @@
-import { getCurrentUser } from '@/api/userActions';
-import ProfileEditPage from '@/components/profile/ProfileEditPage';
 import { redirect } from 'next/navigation';
+import React from 'react';
 
-export default async function Page() {
-    const user = await getCurrentUser();
-    if (!user) {
-        redirect('/login');
-    }
+const DefaultSettingsRoute = () => {
+    redirect('/profile/settings/basic-info');
+};
 
-    return <ProfileEditPage user={user} />;
-}
+export default DefaultSettingsRoute;
