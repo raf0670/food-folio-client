@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import React from 'react';
 
 const SettingsLayout = async ({ children }) => {
-    const currentUser = getCurrentUser();
+    const currentUser = await getCurrentUser();
     if (!currentUser) {
         redirect('/login');
     }

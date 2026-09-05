@@ -41,7 +41,7 @@ export default function BasicInfoEditPage({ user }) {
     };
 
     return (
-        <div className="min-h-[calc(100vh-80px)] bg-[#FDFBF7] py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-[#FDFBF7] py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl mx-auto space-y-6">
 
                 {/* Back Link */}

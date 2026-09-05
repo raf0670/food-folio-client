@@ -1,11 +1,14 @@
+import { getCurrentUser } from '@/api/userActions';
+import EditPasswordPage from '@/components/settings/EditPasswordPage';
 import React from 'react';
 
-const EditPasswordPage = () => {
+const EditPasswordRootPage = async () => {
+    const user = await getCurrentUser();
     return (
-        <div>
-            edit password
-        </div>
+        <>
+            <EditPasswordPage user={user}></EditPasswordPage>
+        </>
     );
 };
 
-export default EditPasswordPage;
+export default EditPasswordRootPage;
