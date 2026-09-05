@@ -3,13 +3,14 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { Lock, Key, Loader2, ArrowLeft, Save } from 'lucide-react';
+import { Lock, Key, Loader2, ArrowLeft, Save, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
 import { updatePassword } from '@/api/settingsActions';
 
 export default function EditPasswordPage({ user }) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const { register, handleSubmit, watch, formState: { errors } } = useForm({
         defaultValues: {
@@ -24,6 +25,7 @@ export default function EditPasswordPage({ user }) {
 
     const onSubmit = async (data) => {
         setIsSubmitting(true);
+        setErrorMessage('');
 
         try {
             const res = await updatePassword(data);
@@ -37,6 +39,7 @@ export default function EditPasswordPage({ user }) {
 
         } catch (error) {
             console.error('Password update error:', error.message);
+            setErrorMessage(error.message); // Set the error message to display on the UI
         } finally {
             setIsSubmitting(false);
         }
@@ -68,6 +71,14 @@ export default function EditPasswordPage({ user }) {
                             Ensure your account is secure by using a strong, unique password.
                         </p>
                     </div>
+
+                    {/* Error Banner */}
+                    {errorMessage && (
+                        <div className="flex items-center gap-3 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                            <ShieldAlert className="w-5 h-5 shrink-0 text-red-500" />
+                            <span>{errorMessage}</span>
+                        </div>
+                    )}
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
 
